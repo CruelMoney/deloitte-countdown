@@ -1,0 +1,32 @@
+body{
+  font-size: 32px;
+}
+
+.countdown{
+  display: flex;
+}
+.countdown p{
+  text-align: center;
+  margin: 0 1em;
+}
+.countdown span{
+  display: block;
+}
+.countdown span.value{
+  height: 1em;
+  overflow: hidden;
+}
+.countdown span.value ul{
+  display: inline-block;
+  transition: transform 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+.countdown span.value li{
+  height: 1em;
+}
+
+
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
