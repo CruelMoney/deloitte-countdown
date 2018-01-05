@@ -1,7 +1,6 @@
 body{
   font-size: 32px;
 }
-
 .countdown{
   display: flex;
 }
@@ -23,8 +22,6 @@ body{
 .countdown span.value li{
   height: 1em;
 }
-
-
 ul{
   list-style: none;
   padding: 0;

@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   console.log("ready");
 
-  const numberToArray = (num) => {
+  // Helper function 
+  function numberToArray(num) {
     const arr = num.toString()
       .split('')
       .map(function(item, index) {
@@ -11,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function() {
     return arr.length < 2 ? [0, ...arr] : arr;
   }
 
-  const getTimeUntil = (date) => {
+  // Helper function 
+  function getTimeUntil(date) {
     const now = new Date();
     let diff = date - now;
 
@@ -40,12 +42,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  const getValElem = (elem) => {
+  // Helper function 
+  function getValElem(elem) {
     return Array.prototype.slice.call(elem.children)
-    .find(c => c.classList.contains('value'));
+    .find(function(c){return c.classList.contains('value')});
   }
 
-  const initValue = (value) => {
+  // Create HTML based of value
+  function initValue(value) {
     const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     const list = '<ul><li>' + nums.join('</li><li>') + '</li></ul>';
     const len = Math.max(String(value.value).length, 2);
@@ -53,51 +57,47 @@ document.addEventListener("DOMContentLoaded", function() {
     value.elem.innerHTML = html;
   }
 
-  const translateToValue = (value) => {
+   function translateToValue(value) {
     const valueHeight = value.elem.getBoundingClientRect().height;
     const digits = numberToArray(value.value);
-    digits.forEach((digit, idx) => {
+
+    function animate(digit, idx){
       const elem = value.elem.children[idx];
       elem.style.transform = 'translateY(-'+ digit*valueHeight +'px)';
+    }
+    
+    digits.forEach(animate);
+  }
+
+  // get object containing element refs and the current values for each element
+  function getValues(elements, date){
+    // object {days, hours, minutes, seconds}
+    let timeObject = getTimeUntil(date);
+
+    return elements.map(function(el){
+      return {
+        elem: getValElem(el),
+        value: timeObject[el.getAttribute('data-unit')]
+      }
     });
   }
 
-  Array.prototype.slice.call(document.querySelectorAll('.countdown'))
-  .forEach(countdown => {
+  function initCountdown(countdown){
+    // Create and find initial values
     const date = new Date(countdown.getAttribute('data-date'));
-
-    let {days, hours, minutes, seconds} = getTimeUntil(date);
-
     const children = Array.prototype.slice.call(countdown.children);
-    const daysElem = getValElem(children.find(c => c.classList.contains('days')));
-    const hoursElem = getValElem(children.find(c => c.classList.contains('hours')));
-    const minutesElem = getValElem(children.find(c => c.classList.contains('minutes')));
-    const secondsElem = getValElem(children.find(c => c.classList.contains('seconds')));
-  
-    let values = [
-      { elem: daysElem, value: days },
-      { elem: hoursElem, value: hours },
-      { elem: minutesElem, value: minutes },
-      { elem: secondsElem, value: seconds }
-    ];
+    const values = getValues(children, date);
+    values.forEach(initValue);
+    values.forEach(translateToValue);
 
-    values.forEach(value => {
-      initValue(value);
-      translateToValue(value);
-    });
-
-    setInterval(()=>{
-      let {days, hours, minutes, seconds} = getTimeUntil(date);
-      let values = [
-        { elem: daysElem, value: days },
-        { elem: hoursElem, value: hours },
-        { elem: minutesElem, value: minutes },
-        { elem: secondsElem, value: seconds }
-      ];
-      values.forEach(value => {
-        translateToValue(value);
-      });  
+    // Upate frame each second
+    setInterval(function(){
+      let values = getValues(children, date);
+      values.forEach(translateToValue);
     }, 1000);
+  };
 
-  });
+  Array.prototype.slice.call(document.querySelectorAll('.countdown'))
+  .forEach(initCountdown);
+
 });
