@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return parseInt(item);
       });
 
-    return arr.length < 2 ? [0, ...arr] : arr;
+    return arr.length < 2 ? [0].concat(arr) : arr;
   }
 
   // Helper function 
