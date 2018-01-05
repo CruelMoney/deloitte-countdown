@@ -74,7 +74,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // object {days, hours, minutes, seconds}
     let timeObject = getTimeUntil(date);
 
-    return elements.map(function(el){
+    return elements
+    .filter(function(el){return !!el.getAttribute('data-unit')}) // only use elements with unit filter
+    .map(function(el){
       return {
         elem: getValElem(el),
         value: timeObject[el.getAttribute('data-unit')]
